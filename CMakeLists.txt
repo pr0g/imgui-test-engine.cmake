@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.15)
 project(imgui-test-engine.cmake LANGUAGES CXX)
 
 include(FetchContent)
+include(CMakePackageConfigHelpers)
+
 FetchContent_Declare(
   imgui.cmake
   GIT_REPOSITORY https://github.com/pr0g/imgui.cmake.git
@@ -48,7 +50,8 @@ install(
 install(
   EXPORT ${PROJECT_NAME}-config
   NAMESPACE ${PROJECT_NAME}::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  FILE ${PROJECT_NAME}-targets.cmake)
 install(
   FILES imgui-test-engine/imgui_test_engine/imgui_capture_tool.h
         imgui-test-engine/imgui_test_engine/imgui_te_context.h
@@ -61,3 +64,9 @@ install(
         imgui-test-engine/imgui_test_engine/imgui_te_ui.h
         imgui-test-engine/imgui_test_engine/imgui_te_utils.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+configure_package_config_file(
+  ${PROJECT_NAME}-config.cmake.in ${PROJECT_NAME}-config.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
